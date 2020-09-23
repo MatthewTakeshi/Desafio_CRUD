@@ -1,0 +1,58 @@
+@page  "/Produto/CadastroProduto"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div class="card m-3">
+    <h4 class="card-header">Cadastro do Produto</h4>
+    <div class="card-body">
+        <EditForm Model="@user" OnValidSubmit="HandleValidSubmit" @onreset="HandleReset">
+            <div class="form-row">
+                <div class="form-group col-5">
+                    <label>ID</label>
+                    <InputNumber @bind-Value="user.ID" class="form-control" />
+                    <ValidationMessage For="@(() => user.ID)" />
+                </div>
+                <div class="form-group col-5">
+                    <label>Nome</label>
+                    <InputText @bind-Value="user.Nome" class="form-control" />
+                    <ValidationMessage For="@(() => user.Nome)" />
+                </div>
+                <div class="form-group col-5">
+                    <label>Descrição</label>
+                    <InputText @bind-Value="user.Descricao" class="form-control" />
+                    <ValidationMessage For="@(() => user.Descricao)" />
+                </div>
+                <div class="form-group col-5">
+                    <label>Valor</label>
+                    <InputNumber @bind-Value="user.Valor" class="form-control" />
+                    <ValidationMessage For="@(() => user.Valor)" />
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mr-1">Salvar</button>
+                <button type="reset" class="btn btn-secondary">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Modelo_Produto user = new Modelo_Produto();
+    private EditContext editContext { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        //Enviar dados para o Controller no Backend
+        var teste = await Http.PostAsJsonAsync("Produto/Create", user);
+        NavigationManager.NavigateTo("Produto/ListProduto");
+
+    }
+    private void HandleReset()
+    {
+        user = new Modelo_Produto();
+        editContext = new EditContext(user);
+    }
+
+    
+}
