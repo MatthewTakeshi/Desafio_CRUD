@@ -1,6 +1,7 @@
 @page  "/Produto/ListProduto"
 @using System.Net.Http
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <h3>Produtos</h3>
 
@@ -23,8 +24,8 @@
                 <td>@item.Descricao</td>
                 <td>@item.Valor</td>
                 <td>
-                    <button class="btn btn-success" @onclick="@(() => EditModelo_Produto(item.ID))">Edit</button>
-                    <button class="btn btn-danger" @onclick="@(() => DeleteModelo_Produto(item.ID))">Delete</button>
+                    <a href="/Produto/EditProduto/@item.ID.ToString()" ><button class="btn btn-success">Editar</button></a>
+                    <button class="btn btn-danger" @onclick="@(() => Delete_Modelo_Produto(item.ID))">Deletar</button>
                 </td>
             </tr>
             }
@@ -38,7 +39,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         var Produtos = await Http.GetFromJsonAsync<List<Modelo_Produto>>("/Produto/List");
         foreach (var item in Produtos)
         {
@@ -46,14 +46,11 @@
         }
     }
 
-    private void EditModelo_Produto(int itemID)
+    private async Task Delete_Modelo_Produto(int itemID)
     {
         //call controller
-    }
-
-    private void DeleteModelo_Produto(int itemID)
-    {
-        //call controller
+        await Http.DeleteAsync("/Produto/Delete/"+itemID);
+        NavigationManager.NavigateTo("/Produto/ListProduto", true);
     }
 
 }
